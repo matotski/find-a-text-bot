@@ -16,6 +16,6 @@ def file_reader(file_path, search_word):
 
     return matching_sentences
 
-sentences = file_reader('test_text.txt', 'алгебра')
-print(sentences)
+sentences = file_reader('test_text.txt', '')
+
 

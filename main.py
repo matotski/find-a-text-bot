@@ -1,7 +1,8 @@
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher, types
-from aiogram.filters.command import Command, CommandObject
+from aiogram.types import FSInputFile, URLInputFile, BufferedInputFile
+from aiogram.filters.command import Command, CommandObject, CommandStart
 from aiogram.enums.dice_emoji import DiceEmoji
 from config_reader import config
 from aiogram.enums import ParseMode
@@ -10,15 +11,16 @@ from aiogram import F, html
 from datetime import datetime
 from text_reader import find_string_by_word, test_text
 from file_reader import file_reader
+import re
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.bot_token.get_secret_value())
 dp = Dispatcher()
 
 
 
-@dp.message(Command('start'))
-async def cmd_start(message: types.Message):
-    await message.answer(f"Hello, <b>{message.from_user.full_name}</b>", parse_mode=ParseMode.HTML)
+# @dp.message(Command('start'))
+# async def cmd_start(message: types.Message):
+#     await message.answer(f"Hello, <b>{message.from_user.full_name}</b>", parse_mode=ParseMode.HTML)
 
 
 
@@ -144,6 +146,97 @@ async def text_reader(message: types.Message, command: CommandObject):
 #         f"Данные добавлены:\nUrl: {html.quote(data['url'])}\nEmail: {html.quote(data['email'])}\nPassword: {html.quote(data['code'])}")
 
 
+# Диплинки
+
+# @dp.message(Command("help"))
+# @dp.message(CommandStart(
+#     deep_link=True, magic = F.args == 'help'
+# ))
+# async def cmd_start_help(message: types.Message):
+#     await message.answer("spravka")
+#
+# @dp.message(CommandStart(
+#     deep_link=True,
+#     magic=F.args.regexp(re.compile(r'book_(\d+)'))
+# ))
+# async def cmd_start_book(message: types.Message, command: CommandObject):
+#     book_number = command.args.split("_")[1]
+#     await message.answer(f'sending book №{book_number}')
+
+
+
+# Предпросмотр ссылок
+
+# @dp.message(Command("links"))
+# async def cmd_links(message: types.Message):
+#     links_text = (
+#         "https://nplus1.ru/news/2024/05/23/voyager-1-science-data"
+#         "\n"
+#         "https://youtube.com"
+#     )
+#     options_1 = types.LinkPreviewOptions(is_disabled=True)
+#     await message.answer(f"no preview\n{links_text}",link_preview_options=options_1)
+#
+#     options_2 = types.LinkPreviewOptions(prefer_small_media=True,url="https://nplus1.ru/news/2024/05/23/voyager-1-science-data")
+#     await message.answer(f'small preview\n{links_text}',link_preview_options=options_2)
+#
+#     options_3 = types.LinkPreviewOptions(prefer_large_media=True,url="https://nplus1.ru/news/2024/05/23/voyager-1-science-data")
+#     await message.answer(f'large preview\n{links_text}', link_preview_options=options_3)
+#
+#     options_4 = types.LinkPreviewOptions(show_above_text=True,prefer_small_media=True,url="https://nplus1.ru/news/2024/05/23/voyager-1-science-data")
+#     await message.answer(f'small preview above text\n{links_text}', link_preview_options=options_4)
+#
+#     options_5 = types.LinkPreviewOptions(url="https://youtube.com",prefer_small_media=True)
+#     await message.answer(f'specific link\n{links_text}', link_preview_options=options_5)
+
+
+
+# Медиафайлы
+
+# @dp.message(F.animation)
+# async def echo_gif(message: types.Message):
+#     await message.reply_animation(message.animation.file_id)
+
+# @dp.message(Command('images'))
+# async def upload_photo(message:types.Message):
+#     file_ids = []
+#
+#     with open("buffer_emulation.jpg", "rb") as image_from_buffer:
+#         out = await message.answer_photo(BufferedInputFile(
+#             image_from_buffer.read(),
+#             filename = "image from buffer.jpg"
+#         ),
+#         caption="Изображение из буфера"
+#         )
+#         file_ids.append(out.photo[-1].file_id)
+#
+#     image_from_pc = FSInputFile("image_from_pc.jpg")
+#     out = await message.answer_photo(image_from_pc, caption="Изображение из файла на компьютере")
+#     file_ids.append(out.photo[-1].file_id)
+#
+#     await message.answer("Отправленные файлы:\n"+"\n".join(file_ids))
+#
+#     image_from_url = URLInputFile("https://picsum.photos/seed/groosha/400/300")
+#     out = await message.answer_photo(image_from_url, caption="Изображение по ссылке")
+#     file_ids.append(out.photo[-1].file_id)
+
+
+
+# Скачивание файлов
+
+# @dp.message(F.photo)
+# async def download_photo(message: types.Message, bot: Bot):
+#     await bot.download(
+#         file = message.photo[-1].file_id,
+#         destination=f'{message.photo[-1].file_id}.jpg'
+#     )
+#
+# @dp.message(F.sticker)
+# async def download_sticker(message: types.Message, bot: Bot):
+#     await bot.download(
+#         message.sticker,
+#         destination=f'{message.sticker.file_id}.gif'
+#     )
 
 if __name__ == "__main__":
     asyncio.run(main())
